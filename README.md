@@ -113,6 +113,7 @@ SERPAPI_KEY=your_key
 Run server:
 
 ```bash
+cd backend
 uvicorn app:app --reload
 ```
 
