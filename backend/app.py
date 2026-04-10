@@ -30,7 +30,7 @@ async def evaluate(req: URLRequest):
 # endpoint to download pdf
 @app.get("/report/{filename}")
 def get_report(filename: str):
-    path = f"./reports/{filename}"
+    path = f"./download_report/{filename}"
 
     return FileResponse(
         path,

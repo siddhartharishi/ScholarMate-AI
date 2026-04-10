@@ -13,48 +13,61 @@ def authenticity_agent(state: ReportState) -> ReportState:
     text = combine_text(state)
 
     prompt = f"""
-    You are a strict research integrity reviewer.
+    You are a balanced research integrity evaluator.
 
     Your task is to estimate the probability that a research paper contains fabricated, exaggerated, or unreliable claims.
 
     ---
 
-    Paper Content:
-    {text}
+    Scoring Guidelines:
+
+    81–100:
+    - Highly trustworthy
+    - Strong methodology, realistic results, well-supported claims
+
+    61–80:
+    - Mostly reliable
+    - Minor concerns but generally sound
+
+    41-60:
+    - Some concerns
+    - Possible gaps in explanation or weak validation
+
+    21-40:
+    - Likely unreliable
+    - Significant inconsistencies or missing rigor
+
+    0-20:
+    - Highly suspicious
+    - Strong signs of fabrication or unsupported claims
+
+    ---
+
+    IMPORTANT:
+    - Do NOT assign high scores unless there are clear red flags
+    - Minor imperfections should NOT significantly increase the score
 
     ---
 
     Evaluate based on:
 
-    1. Statistical anomalies:
-    - suspiciously perfect results (e.g., repeated 100%, 0.00 loss)
-    - overly rounded or identical numbers
-    - unrealistic improvements
+    1. Statistical anomalies (only if clearly unrealistic)
+    2. Logical consistency between method and results
+    3. Scientific rigor (datasets, baselines, reproducibility)
+    4. Writing patterns (only if strongly indicative of fabrication)
 
-    2. Logical consistency:
-    - claims in conclusions not supported by results
-    - missing explanation of how results were obtained
-    - gaps between methodology and outcomes
+    ---
 
-    3. Scientific rigor:
-    - lack of experimental detail
-    - vague descriptions of datasets or evaluation
-    - absence of baseline comparisons
+    Paper Content:
+    {text[:6000]}
 
-    4. Writing patterns:
-    - generic or vague phrasing
-    - repeated buzzwords without substance
-    - LLM-like verbosity without specifics
+    ---
 
-
-    Do NOT use markdown.
-    Do NOT wrap in ```json```.
     Return ONLY JSON:
     {{
-        "authenticity_score": 0-100
+        "authenticity_score": number (0-100)
     }}
-    """
-        
+"""    
     response = generate(prompt)
     try:
         result = json.loads(response)

@@ -318,10 +318,10 @@ const Index = () => {
                       }`}
                     >
                       {result.authenticity_score > 0.85
-                        ? "Low Risk"
+                        ? "High"
                         : result.authenticity_score > 0.6
-                        ? "Moderate Risk"
-                        : "High Risk"}
+                        ? "Moderate"
+                        : "Low"}
                     </span>
                   </div>
 

@@ -10,36 +10,39 @@ load_dotenv()
 def grammar_check_agent(state: ReportState) -> ReportState:
     text = combine_text(state)
 
+    # optional sampling (recommended)
+    text = text[:5000]
+
     prompt = f"""
-        You are an expert academic writing reviewer.
-        Your task is to evaluate the grammar and writing quality of a research paper.
+You are a balanced academic writing reviewer.
 
-        Focus on:
-        - Clarity of sentences
-        - Correct grammar usage
-        - Appropriate academic tone
-        - Sentence structure 
-        - Use of precise technical language
-        - Avoidance of unnecessary repetition or vague wording
+Evaluate ONLY grammar and writing quality.
 
-        Do NOT evaluate the research quality — only the writing.
-        Rate the grammar quality as ONE of:
-        - "high" - clear, precise, well-structured academic writing with minimal issues
-        - "medium" - generally understandable but contains noticeable grammar issues, awkward phrasing, or inconsistency
-        - "low" - poor grammar, unclear sentences, frequent errors, or difficult to read
+HIGH:
+- Clear, well-structured
+- Minimal errors
 
-        Text to evaluate:
-        {text}
+MEDIUM:
+- Mostly clear, some issues
 
-        Do NOT use markdown.
-        Do NOT wrap in ```json```.
-        Return ONLY JSON:
-        {{
-            "grammar_rating": "medium" | "low" | "high"
-        }}
-    """
+LOW:
+- Poor grammar, hard to read
+
+IMPORTANT:
+Most research papers are HIGH or MEDIUM.
+Only give LOW if clearly poor.
+
+Text:
+{text}
+
+Return ONLY JSON:
+{{
+  "grammar_rating": "high" | "medium" | "low"
+}}
+"""
 
     response = generate(prompt)
+
     try:
         result = json.loads(response)
         rating = result.get("grammar_rating", "medium").lower()
@@ -49,7 +52,7 @@ def grammar_check_agent(state: ReportState) -> ReportState:
 
         state["grammar_rating"] = rating
 
-    except Exception:
+    except:
         state["grammar_rating"] = "medium"
 
     return state
