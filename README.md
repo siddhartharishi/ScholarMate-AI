@@ -57,15 +57,15 @@ Each agent specializes in a specific aspect of evaluation, working in parallel t
 ## 🏗️ Architecture
 
 User Input (arXiv URL)
-↓
+  ↓
 Scraper (ar5iv HTML)
-↓
+  ↓
 LangGraph Orchestrator
-↓
+  ↓
 Parallel Agents
-↓
+  ↓
 Synthesizer Agent
-↓
+  ↓
 Report (UI + PDF)
 
 
